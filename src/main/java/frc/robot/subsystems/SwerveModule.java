@@ -5,6 +5,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,9 +23,6 @@ public class SwerveModule {
     private final TalonFX driveMotor;
     private final SparkMax turningMotor;
 
-    private final RelativeEncoder driveEncoder;
-    private final RelativeEncoder turningEncoder;
-
     private final PIDController turningPidController;
 
     private final CANcoder absoluteEncoder;
@@ -39,12 +37,11 @@ public class SwerveModule {
         absoluteEncoder = new CANcoder(absoluteEncoderId);
 
         driveMotor = new TalonFX(driveMotorId);
+        turningMotor = new SparkMax(turningMotorId,MotorType.kBrushless);
 
         driveMotor.setInverted(driveMotorReversed);
         turningMotor.setInverted(turningMotorReversed);
 
-        driveEncoder = driveMotor.getEncoder();
-        turningEncoder = turningMotor.getEncoder();
 
         // driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         // driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
@@ -58,32 +55,25 @@ public class SwerveModule {
     }
 
     public double getDrivePosition() {
-        return driveEncoder.getPosition();
-    }
-
-    public double getTurningPosition() {
-        return turningEncoder.getPosition();
+        return driveMotor.getPosition().getValueAsDouble();
     }
 
     public double getDriveVelocity() {
-        return driveEncoder.getVelocity();
+        return driveMotor.getVelocity().getValueAsDouble();
     }
 
-    public double getTurningVelocity() {
-        return turningEncoder.getVelocity();
-    }
 
     public double getAbsoluteEncoderRad() {
-        double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
-        angle *= 2.0 * Math.PI;
+        double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
 
     public void resetEncoders() {
-        driveEncoder.setPosition(0);
-        turningEncoder.setPosition(getAbsoluteEncoderRad());
+        driveMotor.setPosition(0);
     }
+    
+
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
