@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -20,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule {
 
     private final TalonFX driveMotor;
     private final SparkMax turningMotor;
@@ -67,11 +68,18 @@ public class SwerveModule extends SubsystemBase {
     }
 
 
+//    public double getAbsoluteEncoderRad() {
+//        double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
+//        angle -= absoluteEncoderOffsetRad;
+//        return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
+//    }
+
     public double getAbsoluteEncoderRad() {
-        double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble();
+        double angle = absoluteEncoder.getAbsolutePosition().refresh().getValueAsDouble(); // Force refresh
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
+
 
     public void resetEncoders() {
         driveMotor.setPosition(0);
@@ -96,7 +104,7 @@ public class SwerveModule extends SubsystemBase {
         state = SwerveModuleState.optimize(state, getState().angle);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
-        SmartDashboard.putString("Swerve[" + absoluteEncoder.getAbsolutePosition() + "] state", state.toString());
+//        SmartDashboard.putNumber("Swerve[" + absoluteEncoder.getDeviceID() + "] Offset", absoluteEncoderOffsetRad);
     }
 
     public void stop() {
@@ -110,5 +118,9 @@ public class SwerveModule extends SubsystemBase {
 
     public Rotation2d getRotation2d() {
         return Rotation2d.fromDegrees(getHeading());
+    }
+
+    public CoreCANcoder getAbsoluteEncoder() {
+        return absoluteEncoder;
     }
 }

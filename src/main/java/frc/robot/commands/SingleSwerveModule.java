@@ -23,7 +23,7 @@ public class SingleSwerveModule extends Command {
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
-        addRequirements(swerveModule);
+//        addRequirements(swerveModule);
     }
 
     @Override
