@@ -122,20 +122,13 @@ import frc.robot.subsystems.SwerveModule;
 
 public class RobotContainer {
 
-    private final SwerveModule frontLeft = new SwerveModule(
-            DriveConstants.kFrontLeftDriveMotorPort,
-            DriveConstants.kFrontLeftTurningMotorPort,
-            DriveConstants.kFrontLeftDriveEncoderReversed,
-            DriveConstants.kFrontLeftTurningEncoderReversed,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed);
+    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
     public RobotContainer() {
-        frontLeft.setDefaultCommand(new SingleSwerveModule(
-                frontLeft,
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+                swerveSubsystem,
                 () -> -driverController.getLeftY(),
                 () -> driverController.getLeftX(),
                 () -> driverController.getRightX(),
@@ -145,7 +138,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        driverController.a().onTrue(new InstantCommand(() -> frontLeft.resetEncoders()));
-        driverController.b().onTrue(new InstantCommand(() -> frontLeft.stop()));
+        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }
 }
