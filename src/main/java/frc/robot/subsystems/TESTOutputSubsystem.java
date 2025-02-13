@@ -7,7 +7,7 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class OutputSubsystem extends SubsystemBase {
+public class TESTOutputSubsystem extends SubsystemBase {
 
     AHRS gyro;
     
