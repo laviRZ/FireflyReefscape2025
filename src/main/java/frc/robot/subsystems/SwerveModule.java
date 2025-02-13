@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.core.CoreCANcoder;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.studica.frc.AHRS;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -97,7 +94,7 @@ public class SwerveModule extends SubsystemBase {
         turningMotor.set(0);
     }
 
-    public CoreCANcoder getAbsoluteEncoder() {
+    public CANcoder getAbsoluteEncoder() {
         return absoluteEncoder;
     }
 }
