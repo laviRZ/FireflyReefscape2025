@@ -1,14 +1,19 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.spark.SparkMax;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -31,11 +36,14 @@ public class SwerveModule extends SubsystemBase {
         absoluteEncoder = new CANcoder(absoluteEncoderId);
 
         driveMotor = new TalonFX(driveMotorId);
-        turningMotor = new SparkMax(turningMotorId,MotorType.kBrushless);
+        turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
 
-        driveMotor.setInverted(driveMotorReversed);
-        turningMotor.setInverted(turningMotorReversed);
+        driveMotor.getConfigurator().apply(new MotorOutputConfigs().withInverted(
+                driveMotorReversed ? InvertedValue.CounterClockwise_Positive : InvertedValue.Clockwise_Positive));
 
+        SparkMaxConfig turningMotorConfig = new SparkMaxConfig();
+        turningMotorConfig.inverted(turningMotorReversed);
+        turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // driveEncoder.setPositionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         // driveEncoder.setVelocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
@@ -56,19 +64,15 @@ public class SwerveModule extends SubsystemBase {
         return driveMotor.getVelocity().getValueAsDouble();
     }
 
-
     public double getAbsoluteEncoderRad() {
         double angle = absoluteEncoder.getAbsolutePosition().refresh().getValueAsDouble(); // Force refresh
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);
     }
 
-
     public void resetEncoders() {
         driveMotor.setPosition(0);
     }
-    
-
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()));
@@ -84,7 +88,7 @@ public class SwerveModule extends SubsystemBase {
             stop();
             return;
         }
-        state = SwerveModuleState.optimize(state, getState().angle);
+        state.optimize(getState().angle);
         driveMotor.set(state.speedMetersPerSecond / DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
         turningMotor.set(turningPidController.calculate(getTurningPosition(), state.angle.getRadians()));
     }
