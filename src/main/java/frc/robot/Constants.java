@@ -9,8 +9,8 @@ public final class Constants {
 
     public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-        public static final double kDriveMotorGearRatio = 1 / 5.8462;
-        public static final double kTurningMotorGearRatio = 1 / 18.0;
+        public static final double kDriveMotorGearRatio = 1 / 6.75;
+        public static final double kTurningMotorGearRatio = 1 / (150/7);
         public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * Math.PI * kWheelDiameterMeters;
         public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2 * Math.PI;
         public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60;
@@ -20,15 +20,14 @@ public final class Constants {
 
     public static final class DriveConstants {
 
-        public static final double kTrackWidth = Units.inchesToMeters(21);
+        // Drivetrain is square
+        public static final double kWheelBase = 0.606; // in mm
         // Distance between right and left wheels
-        public static final double kWheelBase = Units.inchesToMeters(25.5);
-        // Distance between front and back wheels
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-                new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(kWheelBase / 2, kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, -kTrackWidth / 2),
-                new Translation2d(-kWheelBase / 2, kTrackWidth / 2));
+                new Translation2d(kWheelBase / 2, -kWheelBase / 2),
+                new Translation2d(kWheelBase / 2, kWheelBase / 2),
+                new Translation2d(-kWheelBase / 2, -kWheelBase / 2),
+                new Translation2d(-kWheelBase / 2, kWheelBase / 2));
 
         public static final int kFrontLeftDriveMotorPort = 8;
         public static final int kBackLeftDriveMotorPort = 2;
@@ -65,7 +64,7 @@ public final class Constants {
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 0.312;
         public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -0.331;
 
-        public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
+        public static final double kPhysicalMaxSpeedMetersPerSecond = 4.7244;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
 
         public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 4;
@@ -94,9 +93,9 @@ public final class Constants {
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
 
-        public static final int kDriverYAxis = 1;
-        public static final int kDriverXAxis = 0;
-        public static final int kDriverRotAxis = 4;
+        // public static final int kDriverYAxis = 1;
+        // public static final int kDriverXAxis = 0;
+        // public static final int kDriverRotAxis = 4;
         public static final int kDriverFieldOrientedButtonIdx = 1;
 
         public static final double kDeadband = 0.15;
