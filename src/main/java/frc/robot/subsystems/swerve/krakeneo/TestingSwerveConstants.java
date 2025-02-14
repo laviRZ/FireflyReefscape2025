@@ -15,7 +15,7 @@ public class TestingSwerveConstants {
             MAX_SPEED_METERS_PER_SECOND = 4.25,
             MAX_ROTATIONAL_SPEED_RADIANS_PER_SECOND = 12.03;
     static final double
-            DRIVE_NEUTRAL_DEADBAND = 0.2,
+            DRIVE_NEUTRAL_DEADBAND = 0.1,
             ROTATION_NEUTRAL_DEADBAND = 0.5;
     static final double
             SIDE_LENGTH_METERS = Units.inchesToMeters(11.3646157) * 2,

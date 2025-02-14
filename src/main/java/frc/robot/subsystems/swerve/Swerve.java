@@ -275,10 +275,10 @@ public abstract class Swerve extends SubsystemBase {
     public void periodic() {
         super.periodic();
 
-        SmartDashboard.putNumber("swerve/" + getModules()[0].getModuleName() + " angle", getModules()[0].getCurrentState().angle.getDegrees());
-        SmartDashboard.putNumber("swerve/" + getModules()[1].getModuleName() + " angle", getModules()[1].getCurrentState().angle.getDegrees());
-        SmartDashboard.putNumber("swerve/" + getModules()[2].getModuleName() + " angle", getModules()[2].getCurrentState().angle.getDegrees());
-        SmartDashboard.putNumber("swerve/" + getModules()[3].getModuleName() + " angle", getModules()[3].getCurrentState().angle.getDegrees());
+        SmartDashboard.putNumber("swerve/" + getModules()[0].getModuleName() + " angle", getModules()[0].getCurrentState().angle.getRotations());
+        SmartDashboard.putNumber("swerve/" + getModules()[1].getModuleName() + " angle", getModules()[1].getCurrentState().angle.getRotations());
+        SmartDashboard.putNumber("swerve/" + getModules()[2].getModuleName() + " angle", getModules()[2].getCurrentState().angle.getRotations());
+        SmartDashboard.putNumber("swerve/" + getModules()[3].getModuleName() + " angle", getModules()[3].getCurrentState().angle.getRotations());
 
 
     }

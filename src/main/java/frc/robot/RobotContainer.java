@@ -87,11 +87,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.subsystems.swerve.krakeneo.TestingSwerve;
@@ -106,15 +103,16 @@ public class RobotContainer {
 
     public RobotContainer() {
 //        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(swerveSubsystem, () -> -driverController.getLeftY(), () -> driverController.getLeftX(), () -> driverController.getRightX(), () -> !driverController.getHID().getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
-        SWERVE.setDefaultCommand(SwerveCommands.getSelfRelativeOpenLoopSupplierDriveCommand(
-                () -> -driverController.getLeftY(),
-                driverController::getLeftX,
-                driverController::getRightX
+        SWERVE.setDefaultCommand(SwerveCommands.getFieldRelativeOpenLoopSupplierDriveCommand(
+                () -> -driverController.getLeftY()/4,   
+                () -> -driverController.getLeftX()/4,
+                () -> -driverController.getRightX()/8
         ));
         configureButtonBindings();
     }
 
     private void configureButtonBindings() {
+        driverController.x().whileTrue(SwerveCommands.getLockSwerveCommand());
 //        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
 //        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }

@@ -5,17 +5,13 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.Unit;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.opencv.calib3d.StereoBM;
 
 public class TestingSwerveModuleConstants {
     static final double DRIVE_GEAR_RATIO = 6.75;
@@ -34,7 +30,7 @@ public class TestingSwerveModuleConstants {
             FRONT_RIGHT_DRIVE_MOTOR_ID = 6,
             REAR_LEFT_DRIVE_MOTOR_ID = 2,
             REAR_RIGHT_DRIVE_MOTOR_ID = 4;
-    private static final boolean DRIVE_MOTOR_INVERTED = false;
+    private static final boolean DRIVE_MOTOR_INVERTED = true;
     private static final double
             DRIVE_OPEN_LOOP_RAMP_RATE = 0.2,
             DRIVE_CLOSED_LOOP_RAMP_RATE = 0.4;
@@ -65,7 +61,7 @@ public class TestingSwerveModuleConstants {
         REAR_LEFT_STEER_ENCODER_ID = 12,
         REAR_RIGHT_STEER_ENCODER_ID = 13;
     private static final double
-            STEER_MOTOR_P = 0.8,
+            STEER_MOTOR_P = 3,  
             STEER_MOTOR_I = 0,
             STEER_MOTOR_D = 0;
 
@@ -183,10 +179,11 @@ public class TestingSwerveModuleConstants {
         steerConfig.closedLoop.feedbackSensor(ClosedLoopConfig.FeedbackSensor.kPrimaryEncoder);
 //        steerConfig.encoder.inverted(false);
         steerConfig.encoder.positionConversionFactor(7/150f);
-        steerMotor.getEncoder().setPosition((steerEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset)/(150/7f));
 
 
         steerMotor.configure(steerConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+        steerMotor.getEncoder().setPosition(steerEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset);
 //
 //        steerMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 255); // Applied output
 //        steerMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 10); // Motor movement
