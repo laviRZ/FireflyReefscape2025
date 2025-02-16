@@ -89,6 +89,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.OutputSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.subsystems.swerve.krakeneo.TestingSwerve;
@@ -98,6 +99,7 @@ public class RobotContainer {
 //    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     public static Swerve SWERVE = TestingSwerve.getInstance();
+    private final OutputSubsystem outputSubsystem = new OutputSubsystem();
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
@@ -113,6 +115,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         driverController.x().whileTrue(SwerveCommands.getLockSwerveCommand());
+
 //        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
 //        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }
