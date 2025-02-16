@@ -5,9 +5,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.swerve.Conversions;
 import frc.robot.subsystems.swerve.SwerveModule;
 
@@ -68,6 +69,8 @@ public class TestingSwerveModule extends SwerveModule {
     @Override
     protected void setTargetAngle(Rotation2d rotation2d) {
         targetAngle = rotation2d;
+        SmartDashboard.putNumber("swerve/" + getModuleName() + " tangle", rotation2d.getRotations());
+
 //        steerMotor.getPIDController().setReference(rotation2d.getDegrees(), ControlType.kPosition);
         steerMotor.getClosedLoopController().setReference(rotation2d.getRotations(), SparkBase.ControlType.kPosition);
     }
@@ -97,7 +100,7 @@ public class TestingSwerveModule extends SwerveModule {
 
     @Override
     protected Rotation2d getCurrentAngle() {
-        return Rotation2d.fromDegrees(steerMotor.getEncoder().getPosition());
+        return Rotation2d.fromRotations(steerMotor.getEncoder().getPosition());
     }
 }
 

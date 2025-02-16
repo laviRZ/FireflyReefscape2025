@@ -87,11 +87,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.SwerveJoystickCmd;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.output.OutputCommands;
+import frc.robot.subsystems.output.OutputSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 import frc.robot.subsystems.swerve.krakeneo.TestingSwerve;
@@ -101,20 +101,25 @@ public class RobotContainer {
 //    private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
     public static Swerve SWERVE = TestingSwerve.getInstance();
+    public static final OutputSubsystem outputSubsystem = new OutputSubsystem();
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
     public RobotContainer() {
 //        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(swerveSubsystem, () -> -driverController.getLeftY(), () -> driverController.getLeftX(), () -> driverController.getRightX(), () -> !driverController.getHID().getRawButton(OIConstants.kDriverFieldOrientedButtonIdx)));
-        SWERVE.setDefaultCommand(SwerveCommands.getSelfRelativeOpenLoopSupplierDriveCommand(
-                () -> -driverController.getLeftY(),
-                driverController::getLeftX,
-                driverController::getRightX
+        SWERVE.setDefaultCommand(SwerveCommands.getFieldRelativeOpenLoopSupplierDriveCommand(
+                () -> -driverController.getLeftY()/4,   
+                () -> -driverController.getLeftX()/4,
+                () -> -driverController.getRightX()/8
         ));
         configureButtonBindings();
     }
 
     private void configureButtonBindings() {
+        driverController.y().whileTrue(OutputCommands.outputL4());
+        driverController.x().whileTrue(OutputCommands.outputL2L3());
+        driverController.a().whileTrue(OutputCommands.stop());
+        driverController.b().whileTrue(OutputCommands.outputStraight());
 //        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
 //        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }

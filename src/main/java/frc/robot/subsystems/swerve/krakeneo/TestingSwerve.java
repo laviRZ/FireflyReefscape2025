@@ -2,10 +2,12 @@ package frc.robot.subsystems.swerve.krakeneo;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveModule;
 
@@ -27,7 +29,7 @@ public class TestingSwerve extends Swerve {
 
     @Override
     public double getYaw() {
-        return getGyro().getYaw();
+        return -getGyro().getYaw();
     }
 
     @Override
@@ -97,10 +99,10 @@ public class TestingSwerve extends Swerve {
     @Override
     protected void lockSwerve() {
         setBrake(true);
-        swerveModules[TestingSwerveModuleConstants.FRONT_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
-        swerveModules[TestingSwerveModuleConstants.FRONT_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
-        swerveModules[TestingSwerveModuleConstants.REAR_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
-        swerveModules[TestingSwerveModuleConstants.REAR_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+        swerveModules[TestingSwerveModuleConstants.FRONT_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
+        swerveModules[TestingSwerveModuleConstants.FRONT_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+        swerveModules[TestingSwerveModuleConstants.REAR_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+        swerveModules[TestingSwerveModuleConstants.REAR_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
     }
 
     @Override
@@ -132,5 +134,14 @@ public class TestingSwerve extends Swerve {
     protected SlewRateLimiter getYSlewRateLimiter() {
         return TestingSwerveConstants.Y_SLEW_RATE_LIMITER;
     }
+
+    @Override
+    public void periodic(){
+        super.periodic();
+        
+        SmartDashboard.putNumber("heading", getHeading().getDegrees());
+    }
+
+
 }
 
