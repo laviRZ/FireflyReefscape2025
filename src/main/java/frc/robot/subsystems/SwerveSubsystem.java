@@ -5,6 +5,7 @@ import com.studica.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -52,13 +53,17 @@ public class SwerveSubsystem extends SubsystemBase {
             // new Rotation2d(0));
 
     public SwerveSubsystem() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-                zeroHeading();
-            } catch (Exception e) {
-            }
-        }).start();
+//        new Thread(() -> {
+//            try {
+//                Thread.sleep(1000);
+//                zeroHeading();
+//            } catch (Exception e) {
+//            }
+//        }).start(); :)
+
+        try(var not = new Notifier(this::zeroHeading)){
+            not.startPeriodic(1);
+        }
     }
 
     public void zeroHeading() {
