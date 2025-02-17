@@ -103,7 +103,7 @@ public class Swerve extends SubsystemBase {
      * @param rotation    the target theta velocity in radians per second
      */
     protected void fieldRelativeDrive(Translation2d translation, Rotation2d rotation) {
-        final Rotation2d heading = getHeading(); //allianceUtilities.isBlueAlliance() ? getHeading() : getHeading().plus(Rotation2d.fromRotations(0.5));
+        final Rotation2d heading = getHeading();
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                 translation.getX(),
@@ -125,16 +125,6 @@ public class Swerve extends SubsystemBase {
             swerveModuleStates[i] = swerveModules[i].getCurrentPosition();
 
         return swerveModuleStates;
-    }
-
-    /**
-     * Sets whether the swerve drive should be in closed loop control, or in open loop control.
-     *
-     * @param closedLoop true if the drive motor should be in closed loop control, false if it should be in open loop control
-     */
-    protected void setClosedLoop(boolean closedLoop) {
-        for (SwerveModule module : getModules())
-            module.setDriveMotorClosedLoop(closedLoop);
     }
 
     /**
@@ -224,9 +214,5 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("heading", getHeading().getDegrees());
     }
-
-
-
-
 }
 

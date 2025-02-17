@@ -121,7 +121,7 @@ public class SwerveCommands {
     public static FunctionalCommand getFieldRelativeClosedLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(true),
+                () -> initializeDrive(),
                 () -> fieldRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -141,7 +141,7 @@ public class SwerveCommands {
     public static FunctionalCommand getSelfRelativeClosedLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(true),
+                () -> initializeDrive(),
                 () -> selfRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -234,7 +234,7 @@ public class SwerveCommands {
     public static FunctionalCommand getSelfRelativeOpenLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(false),
+                () -> initializeDrive(),
                 () -> selfRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -254,7 +254,7 @@ public class SwerveCommands {
     public static FunctionalCommand getFieldRelativeOpenLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(false),
+                SwerveCommands::initializeDrive,
                 () -> fieldRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -344,9 +344,8 @@ public class SwerveCommands {
         return new PIDController(pidConstants.kP, pidConstants.kI, pidConstants.kD);
     }
 
-    private static void initializeDrive(boolean closedLoop) {
+    private static void initializeDrive() {
         SWERVE.setBrake(true);
-        SWERVE.setClosedLoop(closedLoop);
     }
 
 //    private static void fieldRelativeDrive(double x, double y, Rotation2d angle) {

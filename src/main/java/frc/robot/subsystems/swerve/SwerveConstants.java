@@ -3,14 +3,12 @@ package frc.robot.subsystems.swerve;
 import com.pathplanner.lib.config.PIDConstants;
 import com.studica.frc.AHRS;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 public class SwerveConstants {
-    static final double BRAKE_TIME_SECONDS = 0.3;
     static final double
             MAX_SPEED_METERS_PER_SECOND = 4.25,
             MAX_ROTATIONAL_SPEED_RADIANS_PER_SECOND = 12.03;
@@ -21,9 +19,6 @@ public class SwerveConstants {
             SIDE_LENGTH_METERS = Units.inchesToMeters(11.3646157) * 2,
             DISTANCE_FROM_CENTER_OF_BASE = SIDE_LENGTH_METERS / 2;
     private static final double RATE_LIMIT = 5.5;
-    static final SlewRateLimiter
-            X_SLEW_RATE_LIMITER = new SlewRateLimiter(RATE_LIMIT),
-            Y_SLEW_RATE_LIMITER = new SlewRateLimiter(RATE_LIMIT);
     private static final Translation2d[] LOCATIONS = {
             SwerveModuleConstants.TestingSwerveModules.fromId(0).location,
             SwerveModuleConstants.TestingSwerveModules.fromId(1).location,
@@ -40,7 +35,7 @@ public class SwerveConstants {
     static final PIDConstants
             TRANSLATION_PID_CONSTANTS = new PIDConstants(12, 0, 0),
             ROTATION_PID_CONSTANTS = new PIDConstants(15, 0, 0),
-    AUTO_ROTATION_PID_CONSTANTS = new PIDConstants(15, 0, 0);
+            AUTO_ROTATION_PID_CONSTANTS = new PIDConstants(15, 0, 0);
     static final AHRS GYRO = new AHRS(AHRS.NavXComType.kMXP_SPI);
     private static final TrapezoidProfile.Constraints ROTATION_CONSTRAINTS = new TrapezoidProfile.Constraints(
             720,
@@ -60,16 +55,5 @@ public class SwerveConstants {
 
     static {
         ROTATION_CONTROLLER.enableContinuousInput(-180, 180);
-//        GYRO.configFactoryDefault();
-//
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 200);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_2_GeneralCompass, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_6_SensorFusion, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_2_Gyro, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_4_Mag, 1000);
-//        GYRO.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 1000);
     }
 }
