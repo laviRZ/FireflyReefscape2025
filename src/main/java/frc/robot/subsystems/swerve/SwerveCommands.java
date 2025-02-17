@@ -12,7 +12,7 @@ import frc.robot.RobotContainer;
 import java.util.function.DoubleSupplier;
 
 public class SwerveCommands {
-    private static final Swerve SWERVE = RobotContainer.SWERVE;
+    private static final Swerve SWERVE = null;// RobotContainer.SWERVE;
 //    private static final PoseEstimator POSE_ESTIMATOR = PoseEstimator.getInstance();
 
 //    /**
