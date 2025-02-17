@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve.krakeneo;
+package frc.robot.subsystems.swerve;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.studica.frc.AHRS;
@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
-public class TestingSwerveConstants {
+public class SwerveConstants {
     static final double BRAKE_TIME_SECONDS = 0.3;
     static final double
             MAX_SPEED_METERS_PER_SECOND = 4.25,
@@ -25,16 +25,16 @@ public class TestingSwerveConstants {
             X_SLEW_RATE_LIMITER = new SlewRateLimiter(RATE_LIMIT),
             Y_SLEW_RATE_LIMITER = new SlewRateLimiter(RATE_LIMIT);
     private static final Translation2d[] LOCATIONS = {
-            TestingSwerveModuleConstants.TestingSwerveModules.fromId(0).location,
-            TestingSwerveModuleConstants.TestingSwerveModules.fromId(1).location,
-            TestingSwerveModuleConstants.TestingSwerveModules.fromId(2).location,
-            TestingSwerveModuleConstants.TestingSwerveModules.fromId(3).location
+            SwerveModuleConstants.TestingSwerveModules.fromId(0).location,
+            SwerveModuleConstants.TestingSwerveModules.fromId(1).location,
+            SwerveModuleConstants.TestingSwerveModules.fromId(2).location,
+            SwerveModuleConstants.TestingSwerveModules.fromId(3).location
     };
-    static final TestingSwerveModule[] SWERVE_MODULES = {
-            new TestingSwerveModule(TestingSwerveModuleConstants.TestingSwerveModules.fromId(0)),
-            new TestingSwerveModule(TestingSwerveModuleConstants.TestingSwerveModules.fromId(1)),
-            new TestingSwerveModule(TestingSwerveModuleConstants.TestingSwerveModules.fromId(2)),
-            new TestingSwerveModule(TestingSwerveModuleConstants.TestingSwerveModules.fromId(3))
+    static final SwerveModule[] SWERVE_MODULES = {
+            new SwerveModule(SwerveModuleConstants.TestingSwerveModules.fromId(0)),
+            new SwerveModule(SwerveModuleConstants.TestingSwerveModules.fromId(1)),
+            new SwerveModule(SwerveModuleConstants.TestingSwerveModules.fromId(2)),
+            new SwerveModule(SwerveModuleConstants.TestingSwerveModules.fromId(3))
     };
     static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(LOCATIONS);
     static final PIDConstants

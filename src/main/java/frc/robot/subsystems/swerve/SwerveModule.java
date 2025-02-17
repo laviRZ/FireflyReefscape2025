@@ -1,10 +1,93 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public abstract class SwerveModule  {
+public class SwerveModule {
+    private final TalonFX driveMotor;
+    private final SparkMax steerMotor;
+    private final CANcoder steerEncoder;
+    private final String moduleName;
+    private Rotation2d targetAngle = Rotation2d.fromDegrees(0);
+
+    SwerveModule(SwerveModuleConstants.TestingSwerveModules swerveModule) {
+        final SwerveModuleConstants moduleConstants = swerveModule.swerveModuleConstants;
+
+        driveMotor = moduleConstants.driveMotor;
+        steerMotor = moduleConstants.steerMotor;
+        steerEncoder = moduleConstants.steerEncoder;
+        this.moduleName = swerveModule.name();
+    }
+
+    protected Rotation2d getTargetAngle() {
+        return targetAngle;
+    }
+
+    protected void setBrake(boolean brake) {
+        driveMotor.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    }
+
+    protected void stop() {
+        driveMotor.disable();
+        steerMotor.disable();
+    }
+
+    protected void setTargetClosedLoopVelocity(double velocity) {
+//        final double driveMotorVelocity = Conversions.systemToMotor(velocity, TestingSwerveModuleConstants.DRIVE_GEAR_RATIO);
+//        final double feedForward = TestingSwerveModuleConstants.DRIVE_FEEDFORWARD.calculate(driveMotorVelocity);
+//
+//        driveMotor.setControl(
+//                ControlModeValue.VelocityVoltage, driveMotorVelocity,
+//                feedForward, feedForward
+//        );
+    }
+
+    protected void setTargetOpenLoopVelocity(double velocity) {
+        double power = velocity / SwerveModuleConstants.MAX_THEORETICAL_SPEED_METERS_PER_SECOND;
+        driveMotor.set(power);
+    }
+
+    protected String getModuleName() {
+        return moduleName;
+    }
+
+    protected void setTargetAngle(Rotation2d rotation2d) {
+        targetAngle = rotation2d;
+        SmartDashboard.putNumber("swerve/" + getModuleName() + " tangle", rotation2d.getRotations());
+
+//        steerMotor.getPIDController().setReference(rotation2d.getDegrees(), ControlType.kPosition);
+        steerMotor.getClosedLoopController().setReference(rotation2d.getRotations(), SparkBase.ControlType.kPosition);
+    }
+
+    protected double getDriveDistance() {
+        double motorRevolutions = driveMotor.getPosition().getValueAsDouble();
+        double wheelRevolutions = motorRevolutions / SwerveModuleConstants.DRIVE_GEAR_RATIO;
+        return wheelRevolutions * SwerveModuleConstants.WHEEL_DIAMETER_METERS * Math.PI;
+    }
+
+    protected SwerveModuleState optimizeState(SwerveModuleState state) {
+        return SwerveModuleState.optimize(state, getCurrentAngle());
+    }
+
+    protected double getCurrentVelocity() {
+        double motorRps = driveMotor.getVelocity().getValue().in(Units.RotationsPerSecond);
+        double wheelRps = motorRps / SwerveModuleConstants.DRIVE_GEAR_RATIO;
+        return wheelRps * SwerveModuleConstants.WHEEL_DIAMETER_METERS * Math.PI;
+    }
+
+    protected Rotation2d getCurrentAngle() {
+        return Rotation2d.fromRotations(steerMotor.getEncoder().getPosition());
+    }
+
     private SwerveModuleState targetState = new SwerveModuleState();
     private boolean driveMotorClosedLoop = false;
     private double targetVelocity = 0;
@@ -50,10 +133,6 @@ public abstract class SwerveModule  {
         return targetState;
     }
 
-    /**
-     * @return the target angle of the module
-     */
-    protected abstract Rotation2d getTargetAngle();
 
     /**
      * @return the target velocity of the module
@@ -78,65 +157,5 @@ public abstract class SwerveModule  {
     private void setTargetDegrees(double degrees) {
         setTargetAngle(Rotation2d.fromDegrees(degrees));
     }
-
-    /**
-     * Sets whether the drive motor should brake or coast
-     *
-     * @param brake true if the drive motor should brake, false if it should coast
-     */
-    protected abstract void setBrake(boolean brake);
-
-    /**
-     * Stops the module from moving.
-     */
-    protected abstract void stop();
-
-    /**
-     * @return the module's current angle
-     */
-    protected abstract Rotation2d getCurrentAngle();
-
-    /**
-     * @return the module's current velocity in meters per second
-     */
-    protected abstract double getCurrentVelocity();
-
-    /**
-     * @return the module's current drive distance in meters
-     */
-    protected abstract double getDriveDistance();
-
-    /**
-     * Sets the module's target angle.
-     *
-     * @param rotation2d the target angle
-     */
-    protected abstract void setTargetAngle(Rotation2d rotation2d);
-
-    /**
-     * Optimizes the module state.
-     *
-     * @param state the state to optimize
-     * @return the optimized state
-     */
-    protected abstract SwerveModuleState optimizeState(SwerveModuleState state);
-
-    /**
-     * Sets the module's target velocity in closed loop control.
-     *
-     * @param velocity the target velocity
-     */
-    protected abstract void setTargetClosedLoopVelocity(double velocity);
-
-    /**
-     * Sets the module's target velocity in open loop control.
-     *
-     * @param velocity the target velocity
-     */
-    protected abstract void setTargetOpenLoopVelocity(double velocity);
-
-    /**
-     * @return the module's name
-     */
-    protected abstract String getModuleName();
 }
+

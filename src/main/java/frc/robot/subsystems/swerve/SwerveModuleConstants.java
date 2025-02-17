@@ -1,4 +1,4 @@
-package frc.robot.subsystems.swerve.krakeneo;
+package frc.robot.subsystems.swerve;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -13,7 +13,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
-public class TestingSwerveModuleConstants {
+public class SwerveModuleConstants {
     static final double DRIVE_GEAR_RATIO = 6.75;
     static final double WHEEL_DIAMETER_METERS = 0.1016;
     static final double MAX_THEORETICAL_SPEED_METERS_PER_SECOND = 4;
@@ -100,26 +100,26 @@ public class TestingSwerveModuleConstants {
             REAR_RIGHT_STEER_ENCODER = new CANcoder(
                     REAR_RIGHT_STEER_ENCODER_ID
             );
-    private static final TestingSwerveModuleConstants
-            FRONT_LEFT_SWERVE_MODULE_CONSTANTS = new TestingSwerveModuleConstants(
+    private static final SwerveModuleConstants
+            FRONT_LEFT_SWERVE_MODULE_CONSTANTS = new SwerveModuleConstants(
                     FRONT_LEFT_DRIVE_MOTOR,
                     FRONT_LEFT_STEER_MOTOR,
                     FRONT_LEFT_STEER_ENCODER,
                     FRONT_LEFT_STEER_ENCODER_OFFSET
             ),
-            FRONT_RIGHT_SWERVE_MODULE_CONSTANTS = new TestingSwerveModuleConstants(
+            FRONT_RIGHT_SWERVE_MODULE_CONSTANTS = new SwerveModuleConstants(
                     FRONT_RIGHT_DRIVE_MOTOR,
                     FRONT_RIGHT_STEER_MOTOR,
                     FRONT_RIGHT_STEER_ENCODER,
                     FRONT_RIGHT_STEER_ENCODER_OFFSET
             ),
-            REAR_LEFT_SWERVE_MODULE_CONSTANTS = new TestingSwerveModuleConstants(
+            REAR_LEFT_SWERVE_MODULE_CONSTANTS = new SwerveModuleConstants(
                     REAR_LEFT_DRIVE_MOTOR,
                     REAR_LEFT_STEER_MOTOR,
                     REAR_LEFT_STEER_ENCODER,
                     REAR_LEFT_STEER_ENCODER_OFFSET
             ),
-            REAR_RIGHT_SWERVE_MODULE_CONSTANTS = new TestingSwerveModuleConstants(
+            REAR_RIGHT_SWERVE_MODULE_CONSTANTS = new SwerveModuleConstants(
                     REAR_RIGHT_DRIVE_MOTOR,
                     REAR_RIGHT_STEER_MOTOR,
                     REAR_RIGHT_STEER_ENCODER,
@@ -128,20 +128,20 @@ public class TestingSwerveModuleConstants {
 
     private static final Translation2d
             FRONT_LEFT_MODULE_LOCATION = new Translation2d(
-                    TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
-                    TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
+                    SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
+                    SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
             ),
             FRONT_RIGHT_MODULE_LOCATION = new Translation2d(
-                    TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
-                    -TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
+                    SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
+                    -SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
             ),
             REAR_LEFT_MODULE_LOCATION = new Translation2d(
-                    -TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
-                    TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
+                    -SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
+                    SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
             ),
             REAR_RIGHT_MODULE_LOCATION = new Translation2d(
-                    -TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
-                    -TestingSwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
+                    -SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE,
+                    -SwerveConstants.DISTANCE_FROM_CENTER_OF_BASE
             );
 
     final TalonFX driveMotor;
@@ -149,7 +149,7 @@ public class TestingSwerveModuleConstants {
     final CANcoder steerEncoder;
     final double encoderOffset;
 
-    public TestingSwerveModuleConstants(TalonFX driveMotor, SparkMax steerMotor, CANcoder steerEncoder, double encoderOffset) {
+    public SwerveModuleConstants(TalonFX driveMotor, SparkMax steerMotor, CANcoder steerEncoder, double encoderOffset) {
         this.driveMotor = driveMotor;
         this.steerMotor = steerMotor;
         this.steerEncoder = steerEncoder;
@@ -212,10 +212,10 @@ public class TestingSwerveModuleConstants {
         REAR_RIGHT(3, REAR_RIGHT_SWERVE_MODULE_CONSTANTS, REAR_RIGHT_MODULE_LOCATION);
 
         final int id;
-        final TestingSwerveModuleConstants swerveModuleConstants;
+        final SwerveModuleConstants swerveModuleConstants;
         final Translation2d location;
 
-        TestingSwerveModules(int id, TestingSwerveModuleConstants swerveModuleConstants, Translation2d location) {
+        TestingSwerveModules(int id, SwerveModuleConstants swerveModuleConstants, Translation2d location) {
             this.id = id;
             this.swerveModuleConstants = swerveModuleConstants;
             this.location = location;

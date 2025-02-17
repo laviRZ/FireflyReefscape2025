@@ -1,9 +1,8 @@
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.config.PIDConstants;
+import com.studica.frc.AHRS;
+
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,113 +12,46 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public abstract class Swerve extends SubsystemBase {
+public class Swerve extends SubsystemBase {
+    private static final Swerve INSTANCE = new Swerve();
+    private final SwerveModule[] swerveModules = SwerveConstants.SWERVE_MODULES;
 
-    /**
-     * @return the pitch of the swerve
-     */
-    public abstract double getPitch();
+    private Swerve() {
+    }
 
-    /**
-     * @return the yaw of the swerve
-     */
-    public abstract double getYaw();
+    public static Swerve getInstance() {
+        return INSTANCE;
+    }
 
-    /**
-     * Sets the yaw of the swerve.
-     * @param yaw the new yaw
-     */
-    public abstract void setYaw(double yaw);
+    public double getYaw() {
+        return -getGyro().getYaw();
+    }
 
-    /**
-     * @return the swerve's modules
-     */
-    protected abstract SwerveModule[] getModules();
+    public void setYaw(double yaw) {
+        getGyro().setAngleAdjustment(-yaw);
+    }
 
-    /**
-     * @return the swerve's kinematics
-     */
-    protected abstract SwerveDriveKinematics getKinematics();
+    protected AHRS getGyro() {
+        return SwerveConstants.GYRO;
+    }
 
-    /**
-     * @return the swerve's drive neutral deadband
-     */
-    protected abstract double getDriveNeutralDeadband();
+    protected SwerveModule[] getModules() {
+        return swerveModules;
+    }
 
-    /**
-     * @return the swerve's rotation neutral deadband
-     */
-    protected abstract double getRotationNeutralDeadband();
+    protected SwerveDriveKinematics getKinematics() {
+        return SwerveConstants.KINEMATICS;
+    }
 
-    /**
-     * @return the swerve's translation PID constants
-     */
-    public abstract PIDConstants getTranslationPIDConstants();
 
-    /**
-     * @return the swerve's rotation PID constants
-     */
-    protected abstract PIDConstants getRotationPIDConstants();
+    protected void lockSwerve() {
+        setBrake(true);
+        swerveModules[SwerveModuleConstants.FRONT_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+        swerveModules[SwerveModuleConstants.FRONT_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
+        swerveModules[SwerveModuleConstants.REAR_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
+        swerveModules[SwerveModuleConstants.REAR_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+    }
 
-    /**
-     * @return the swerve's rotation PID constants for auto
-     */
-    protected abstract PIDConstants getAutoRotationPIDConstants();
-
-    /**
-     * @return the swerve's max speed in meters per second
-     */
-    protected abstract double getMaxSpeedMetersPerSecond();
-
-    /**
-     * @return the swerve's max rotational speed in radians per second
-     */
-    protected abstract double getMaxRotationalSpeedRadiansPerSecond();
-
-    /**
-     * @return the swerve's brake time in seconds
-     */
-    protected abstract double getBrakeTimeSeconds();
-
-    /**
-     * @return the swerve's profiled pid controller for rotation
-     */
-    public abstract ProfiledPIDController getRotationController();
-
-    /**
-     * Locks the swerve, so it'll be hard to move it.
-     */
-    protected abstract void lockSwerve();
-
-    /**
-     * @return the tolerance for translation in meters
-     */
-    protected abstract double getTranslationTolerance();
-
-    /**
-     * @return the tolerance for rotation in degrees
-     */
-    protected abstract double getRotationTolerance();
-
-    /**
-     * @return the tolerance for translation velocity in meters per second
-     */
-    protected abstract double getTranslationVelocityTolerance();
-
-    /**
-     * @return the tolerance for rotation velocity in radians per second
-     */
-    protected abstract double getRotationVelocityTolerance();
-
-    /**
-     * @return a slew rate limiter for the x-axis
-     */
-    protected abstract SlewRateLimiter getXSlewRateLimiter();
-
-    /**
-     * @return a slew rate limiter for the y-axis
-     */
-    protected abstract SlewRateLimiter getYSlewRateLimiter();
 
     /**
      * @return the heading of the robot
@@ -174,7 +106,7 @@ public abstract class Swerve extends SubsystemBase {
         final Rotation2d heading = getHeading(); //allianceUtilities.isBlueAlliance() ? getHeading() : getHeading().plus(Rotation2d.fromRotations(0.5));
 
         ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                getXSlewRateLimiter().calculate(translation.getX()),
+                translation.getX(),
                 translation.getY(),
                 rotation.getRadians(),
                 heading
@@ -233,21 +165,6 @@ public abstract class Swerve extends SubsystemBase {
             getModules()[i].setTargetState(swerveModuleStates[i]);
     }
 
-//    private short[] getGyroAccelerometer() {
-//        final short[] accelerometer = new short[3];
-//        getGyro().getBiasedAccelerometer(accelerometer);
-//
-//        return accelerometer;
-//    }
-
-    private double getRotationControllerError() {
-        return getRotationController().getPositionError();
-    }
-
-    private double getRotationControllerSetpoint() {
-        return getRotationController().getSetpoint().position;
-    }
-
     private void selfRelativeDrive(ChassisSpeeds chassisSpeeds) {
         if (isStill(chassisSpeeds)) {
             stop();
@@ -256,6 +173,30 @@ public abstract class Swerve extends SubsystemBase {
 
         SwerveModuleState[] swerveModuleStates = getKinematics().toSwerveModuleStates(chassisSpeeds);
         setTargetModuleStates(swerveModuleStates);
+    }
+
+    protected double getDriveNeutralDeadband() {
+        return SwerveConstants.DRIVE_NEUTRAL_DEADBAND;
+    }
+
+    protected double getRotationNeutralDeadband() {
+        return SwerveConstants.ROTATION_NEUTRAL_DEADBAND;
+    }
+
+    protected double getTranslationVelocityTolerance() {
+        return SwerveConstants.TRANSLATION_VELOCITY_TOLERANCE;
+    }
+
+    protected double getRotationVelocityTolerance() {
+        return SwerveConstants.ROTATION_VELOCITY_TOLERANCE;
+    }
+
+    protected double getMaxSpeedMetersPerSecond() {
+        return SwerveConstants.MAX_SPEED_METERS_PER_SECOND;
+    }
+
+    protected double getMaxRotationalSpeedRadiansPerSecond() {
+        return SwerveConstants.MAX_ROTATIONAL_SPEED_RADIANS_PER_SECOND;
     }
 
     /**
@@ -281,5 +222,11 @@ public abstract class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("swerve/" + getModules()[3].getModuleName() + " angle", getModules()[3].getCurrentState().angle.getRotations());
 
 
+        SmartDashboard.putNumber("heading", getHeading().getDegrees());
     }
+
+
+
+
 }
+
