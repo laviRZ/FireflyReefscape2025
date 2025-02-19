@@ -11,7 +11,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Units;
 
 public class SwerveModuleConstants {
     static final double DRIVE_GEAR_RATIO = 6.75;
@@ -61,15 +61,15 @@ public class SwerveModuleConstants {
         REAR_LEFT_STEER_ENCODER_ID = 12,
         REAR_RIGHT_STEER_ENCODER_ID = 13;
     private static final double
-            STEER_MOTOR_P = 3,  
+            STEER_MOTOR_P = 0.024,//3/300d,  
             STEER_MOTOR_I = 0,
             STEER_MOTOR_D = 0;
 
     private static final double
         FRONT_LEFT_STEER_ENCODER_OFFSET = 0.530273,
         FRONT_RIGHT_STEER_ENCODER_OFFSET = 0.022217,
-        REAR_LEFT_STEER_ENCODER_OFFSET = 0.541992,
-        REAR_RIGHT_STEER_ENCODER_OFFSET = 0.371582;
+        REAR_LEFT_STEER_ENCODER_OFFSET = 0.590088,
+        REAR_RIGHT_STEER_ENCODER_OFFSET = 0.382080;
     private static final SparkMax
             FRONT_LEFT_STEER_MOTOR = new SparkMax(
                     FRONT_LEFT_STEER_MOTOR_ID,
@@ -175,15 +175,15 @@ public class SwerveModuleConstants {
         steerConfig.voltageCompensation(VOLTAGE_COMP_SATURATION);
         steerConfig.closedLoop.positionWrappingEnabled(true);
         steerConfig.closedLoop.positionWrappingMinInput(0);
-        steerConfig.closedLoop.positionWrappingMaxInput(Units.rotationsToDegrees(1));
+        steerConfig.closedLoop.positionWrappingMaxInput(Units.Rotation.of(1).in(Units.Degrees));
         steerConfig.closedLoop.feedbackSensor(ClosedLoopConfig.FeedbackSensor.kPrimaryEncoder);
 //        steerConfig.encoder.inverted(false);
-        steerConfig.encoder.positionConversionFactor(7/150f);
+        steerConfig.encoder.positionConversionFactor(7/150f*360);
 
 
         steerMotor.configure(steerConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-        steerMotor.getEncoder().setPosition(steerEncoder.getAbsolutePosition().getValueAsDouble() - encoderOffset);
+        steerMotor.getEncoder().setPosition(steerEncoder.getAbsolutePosition().getValue().minus(Units.Rotations.of(encoderOffset)).in(edu.wpi.first.units.Units.Degrees));
 //
 //        steerMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus0, 255); // Applied output
 //        steerMotor.setPeriodicFramePeriod(CANSparkMaxLowLevel.PeriodicFrame.kStatus1, 10); // Motor movement

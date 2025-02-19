@@ -59,6 +59,10 @@ public class Swerve extends SubsystemBase {
     public Rotation2d getHeading() {
         return Rotation2d.fromDegrees(MathUtil.inputModulus(getYaw(), -180, 180));
     }
+    public void resetGyro() {
+        setYaw(0); 
+    }
+    
 
     /**
      * @return the robot's current velocity
@@ -80,6 +84,7 @@ public class Swerve extends SubsystemBase {
     public void setHeading(Rotation2d heading) {
         setYaw(heading.getDegrees());
     }
+
 
     /**
      * Drives the swerve with the given velocities, relative to the robot's frame of reference.

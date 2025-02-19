@@ -4,6 +4,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -32,7 +33,7 @@ public class SwerveModule {
     }
 
     protected void setTargetAngle(Rotation2d rotation2d) {
-        steerMotor.getClosedLoopController().setReference(rotation2d.getRotations(), SparkBase.ControlType.kPosition);
+        steerMotor.getClosedLoopController().setReference(rotation2d.getDegrees(), SparkBase.ControlType.kPosition);
     }
 
     private void setTargetVelocity(double velocity){
@@ -78,7 +79,7 @@ public class SwerveModule {
     }
 
     protected Rotation2d getCurrentAngle() {
-        return Rotation2d.fromRotations(steerMotor.getEncoder().getPosition());
+        return Rotation2d.fromDegrees(steerMotor.getEncoder().getPosition());
     }
 
     protected SwerveModulePosition getCurrentPosition() {

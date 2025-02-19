@@ -41,7 +41,11 @@ public class SwerveCommands {
      * @return the command
      */
     public static StartEndCommand getLockSwerveCommand() {
-        return new StartEndCommand(SWERVE::lockSwerve, () -> {}, SWERVE);
+        return new StartEndCommand(SWERVE::lockSwerve, SWERVE::stop, SWERVE);
+    }
+
+    public static Command getResetHeadingCommand() {
+        return new InstantCommand(()->SWERVE.setHeading(new Rotation2d()));
     }
 
 
