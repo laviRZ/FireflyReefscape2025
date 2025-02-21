@@ -1,7 +1,7 @@
 package frc.robot.subsystems.swerve;
 
 import com.studica.frc.AHRS;
-
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,9 +9,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Logged
 public class Swerve extends SubsystemBase {
     private static final Swerve INSTANCE = new Swerve();
     private final SwerveModule[] swerveModules = SwerveConstants.SWERVE_MODULES;
@@ -46,10 +46,10 @@ public class Swerve extends SubsystemBase {
 
     protected void lockSwerve() {
         setBrake(true);
-        swerveModules[SwerveModuleConstants.FRONT_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
-        swerveModules[SwerveModuleConstants.FRONT_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
-        swerveModules[SwerveModuleConstants.REAR_LEFT_ID].setTargetAngle(Rotation2d.fromDegrees(-45));
-        swerveModules[SwerveModuleConstants.REAR_RIGHT_ID].setTargetAngle(Rotation2d.fromDegrees(45));
+        swerveModules[SwerveModuleConstants.FRONT_LEFT_ID].setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-135)));
+        swerveModules[SwerveModuleConstants.FRONT_RIGHT_ID].setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
+        swerveModules[SwerveModuleConstants.REAR_LEFT_ID].setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+        swerveModules[SwerveModuleConstants.REAR_RIGHT_ID].setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
     }
 
 
@@ -207,17 +207,23 @@ public class Swerve extends SubsystemBase {
                         Math.abs(chassisSpeeds.omegaRadiansPerSecond) <= getRotationNeutralDeadband();
     }
 
+    public SwerveModuleState[] getCurrentSwerveModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[getModules().length];
+        for(int i = 0; i < getModules().length; i++)
+            states[i] = getModules()[i].getCurrentState();
+        return states;
+    }
+
+    public SwerveModuleState[] getTargetSwerveModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[getModules().length];
+        for(int i = 0; i < getModules().length; i++)
+            states[i] = getModules()[i].getTargetState();
+        return states;
+    }
+    
     @Override
     public void periodic() {
         super.periodic();
-
-        SmartDashboard.putNumber("swerve/" + getModules()[0].getModuleName() + " angle", getModules()[0].getCurrentState().angle.getRotations());
-        SmartDashboard.putNumber("swerve/" + getModules()[1].getModuleName() + " angle", getModules()[1].getCurrentState().angle.getRotations());
-        SmartDashboard.putNumber("swerve/" + getModules()[2].getModuleName() + " angle", getModules()[2].getCurrentState().angle.getRotations());
-        SmartDashboard.putNumber("swerve/" + getModules()[3].getModuleName() + " angle", getModules()[3].getCurrentState().angle.getRotations());
-
-
-        SmartDashboard.putNumber("heading", getHeading().getDegrees());
     }
 }
 

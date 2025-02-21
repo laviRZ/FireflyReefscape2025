@@ -4,16 +4,22 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
-
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Units;
 
+@Logged
 public class SwerveModule {
+    @Logged
     private final String moduleName;
+    @NotLogged
     private final TalonFX driveMotor;
+    @NotLogged
     private final SparkMax steerMotor;
+
 
     private SwerveModuleState targetState = new SwerveModuleState();
 
@@ -86,11 +92,11 @@ public class SwerveModule {
         return new SwerveModulePosition(getDriveDistance(), getCurrentAngle());
     }
 
-    protected SwerveModuleState getCurrentState() {
+    public SwerveModuleState getCurrentState() {
         return new SwerveModuleState(getCurrentVelocity(), getCurrentAngle());
     }
 
-    private SwerveModuleState getTargetState() {
+    public SwerveModuleState getTargetState() {
         return targetState;
     }
 }
