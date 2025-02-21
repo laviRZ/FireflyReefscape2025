@@ -87,10 +87,14 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.Elevator.ElevatorCommands;
+import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorState;
+import frc.robot.subsystems.Elevator.ElevatorSubsystem;
 import frc.robot.subsystems.output.OutputCommands;
+import frc.robot.subsystems.output.OutputConstants.OutputState;
 import frc.robot.subsystems.output.OutputSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
@@ -102,6 +106,7 @@ public class RobotContainer {
 
     public static Swerve SWERVE = TestingSwerve.getInstance();
     public static final OutputSubsystem outputSubsystem = new OutputSubsystem();
+    public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
@@ -112,14 +117,23 @@ public class RobotContainer {
                 () -> -driverController.getLeftX()/4,
                 () -> -driverController.getRightX()/8
         ));
+        // elevatorSubsystem.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
         configureButtonBindings();
+        SmartDashboard.putData(elevatorSubsystem);
     }
 
     private void configureButtonBindings() {
-        driverController.y().whileTrue(OutputCommands.outputL4());
-        driverController.x().whileTrue(OutputCommands.outputL2L3());
-        driverController.a().whileTrue(OutputCommands.stop());
-        driverController.b().whileTrue(OutputCommands.outputStraight());
+        driverController.y().whileTrue(OutputCommands.output(OutputState.L1));
+        driverController.x().whileTrue(OutputCommands.output(OutputState.L2L3));
+        driverController.a().whileTrue(OutputCommands.output(OutputState.L4));
+        driverController.b().whileTrue(OutputCommands.output(OutputState.STOP));
+        
+        driverController.povUp().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L1));  
+        driverController.povRight().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L2)); 
+        driverController.povDown().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
+        driverController.povLeft().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
+
+
 //        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
 //        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }

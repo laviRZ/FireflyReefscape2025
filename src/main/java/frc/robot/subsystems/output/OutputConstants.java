@@ -4,10 +4,28 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 
 public class OutputConstants {
-     static final SparkMax up = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
-    static final SparkMax down = new SparkMax(6, SparkLowLevel.MotorType.kBrushless);
-    static final boolean kInvertFollower = true;
-    static final float kAnglePower = 0.08f;
-    static final float kOutPower = -0.3f;
+     public enum OutputState {
+        L4 (-ANGLE_POWER, -OUT_POWER),
+        L2L3 (-ANGLE_POWER,OUT_POWER),
+        STOP (0, 0),
+        L1 (-L1_TOP_MOTOR_POWER, -OUT_POWER);
+        
+        double upPower;
+        double downPower;
+        OutputState(double upPower, double downPower) {
+            this.upPower = upPower;
+            this.downPower = downPower;
+        }
+    }  
+
+
+
+     static final SparkMax up = new SparkMax(30, SparkLowLevel.MotorType.kBrushless);
+    static final SparkMax down = new SparkMax(31, SparkLowLevel.MotorType.kBrushless);
+    static final double ANGLE_POWER = 0.08
+     ,OUT_POWER= -0.3
+     ,L1_TOP_MOTOR_POWER = 0.12;
+
 
 }
+
