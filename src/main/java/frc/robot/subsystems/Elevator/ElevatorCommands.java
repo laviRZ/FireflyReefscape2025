@@ -8,18 +8,18 @@ import frc.robot.RobotContainer;
 public class ElevatorCommands {
     public static Command moveToHeight(ElevatorConstants.ElevatorState state) {
       return new FunctionalCommand(()->{
-        RobotContainer.elevatorSubsystem.initController(state);
+        RobotContainer.ELEVATOR.initController(state);
       }
-        ,RobotContainer.elevatorSubsystem::runMotor,
+        ,RobotContainer.ELEVATOR::runMotor,
          (interrupted)-> {
-            RobotContainer.elevatorSubsystem.stop();
+            RobotContainer.ELEVATOR.stop();
          }
          ,()->false,
-         RobotContainer.elevatorSubsystem
+         RobotContainer.ELEVATOR
          );
     }
 
-    public static Command resetEncoder(ElevatorSubsystem elevator) {
+    public static Command resetEncoder(Elevator elevator) {
         return new InstantCommand(elevator::resetEncoder, elevator);
     }
     

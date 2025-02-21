@@ -4,13 +4,14 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorState;
 
-
-public class ElevatorSubsystem extends SubsystemBase {
-    public ElevatorSubsystem() {
+@Logged
+public class Elevator extends SubsystemBase {
+    public Elevator() {
         SparkMaxConfig motorconfig = new SparkMaxConfig();
         motorconfig.encoder.positionConversionFactor(ElevatorConstants.ENCODER_TO_METERS);
         motorconfig.encoder.velocityConversionFactor(ElevatorConstants.ENCODER_TO_METERS/60);

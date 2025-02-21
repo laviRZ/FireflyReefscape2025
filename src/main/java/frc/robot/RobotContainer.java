@@ -6,18 +6,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Elevator.ElevatorCommands;
 import frc.robot.subsystems.Elevator.ElevatorConstants.ElevatorState;
-import frc.robot.subsystems.Elevator.ElevatorSubsystem;
+import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.output.OutputCommands;
 import frc.robot.subsystems.output.OutputConstants.OutputState;
-import frc.robot.subsystems.output.OutputSubsystem;
+import frc.robot.subsystems.output.Output;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 
 @Logged
 public class RobotContainer {
     public static final Swerve SWERVE = Swerve.getInstance();
-    public static final OutputSubsystem outputSubsystem = new OutputSubsystem();
-    public static final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+    public static final Output OUTPUT = new Output();
+    public static final Elevator ELEVATOR = new Elevator();
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
@@ -29,7 +29,7 @@ public class RobotContainer {
         ));
         // elevatorSubsystem.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
         configureButtonBindings();
-        SmartDashboard.putData(elevatorSubsystem);
+        SmartDashboard.putData(ELEVATOR);
     }
 
     private void configureButtonBindings() {
@@ -46,4 +46,20 @@ public class RobotContainer {
 //        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
 //        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
     }
+
+    @Logged(name="Swerve")
+    public Swerve logSwerve(){
+        return SWERVE;
+    }
+
+    @Logged(name = "Output")
+    public Output logOutput(){
+        return OUTPUT;
+    }
+
+    @Logged(name = "Elevator")
+    public Elevator logElevator(){
+        return ELEVATOR;
+    }
+
 }

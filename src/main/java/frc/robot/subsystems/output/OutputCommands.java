@@ -9,9 +9,9 @@ public class OutputCommands {
     public static Command output(OutputState state) {
         return new RunCommand(
                 () -> {
-                   RobotContainer.outputSubsystem.setMotorOutput(state);
+                   RobotContainer.OUTPUT.setMotorOutput(state);
                 },
-                RobotContainer.outputSubsystem
+                RobotContainer.OUTPUT
         );
     }
 }
