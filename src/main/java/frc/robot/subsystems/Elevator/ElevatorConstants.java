@@ -6,8 +6,12 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ElevatorConstants {
+
+    public static final int LIMIT_SWITCH_PORT = 1; 
+    public static final DigitalInput limitSwitch = new DigitalInput(LIMIT_SWITCH_PORT);
 
     public enum ElevatorState {
         L4(1.2),

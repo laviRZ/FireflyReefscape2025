@@ -18,6 +18,7 @@ public class RobotContainer {
     public static final Swerve SWERVE = Swerve.getInstance();
     public static final Output OUTPUT = new Output();
     public static final Elevator ELEVATOR = new Elevator();
+    
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
@@ -30,6 +31,7 @@ public class RobotContainer {
         // elevatorSubsystem.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
         configureButtonBindings();
         SmartDashboard.putData(ELEVATOR);
+        RobotContainer.ELEVATOR.setDefaultCommand(ElevatorCommands.resetEncoder(ELEVATOR));
     }
 
     private void configureButtonBindings() {
