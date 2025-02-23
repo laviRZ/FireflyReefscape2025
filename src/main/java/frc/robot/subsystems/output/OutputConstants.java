@@ -3,7 +3,11 @@ package frc.robot.subsystems.output;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class OutputConstants {
+     public static final int BEAM_BREAKER_PORT = 2; 
+    public static final DigitalInput beamBreaker = new DigitalInput(BEAM_BREAKER_PORT);
      public enum OutputState {
         L4 (-ANGLE_POWER, -OUT_POWER),
         L2L3 (-ANGLE_POWER,OUT_POWER),
