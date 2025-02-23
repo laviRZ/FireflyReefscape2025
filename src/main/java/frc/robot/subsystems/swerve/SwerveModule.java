@@ -1,142 +1,102 @@
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.epilogue.NotLogged;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Units;
 
-public abstract class SwerveModule  {
+@Logged
+public class SwerveModule {
+    @Logged
+    private final String moduleName;
+    @NotLogged
+    private final TalonFX driveMotor;
+    @NotLogged
+    private final SparkMax steerMotor;
+
+
     private SwerveModuleState targetState = new SwerveModuleState();
-    private boolean driveMotorClosedLoop = false;
-    private double targetVelocity = 0;
 
-    /**
-     * @return the current position of the module
-     */
-    protected SwerveModulePosition getCurrentPosition() {
-        return new SwerveModulePosition(getDriveDistance(), getCurrentAngle());
+    SwerveModule(SwerveModuleConstants.TestingSwerveModules swerveModuleConstants) {
+        final SwerveModuleConstants moduleConstants = swerveModuleConstants.swerveModuleConstants;
+
+        this.moduleName = swerveModuleConstants.name();
+        driveMotor = moduleConstants.driveMotor;
+        steerMotor = moduleConstants.steerMotor;
     }
 
-    /**
-     * @return the current state of the module
-     */
-    protected SwerveModuleState getCurrentState() {
-        return new SwerveModuleState(getCurrentVelocity(), getCurrentAngle());
-    }
-
-    /**
-     * Sets the target state for the module.
-     *
-     * @param targetState the target state
-     */
     public void setTargetState(SwerveModuleState targetState) {
-        this.targetState = targetState = optimizeState(targetState);
+        this.targetState = targetState;
+        this.targetState.optimize(getCurrentAngle());
         setTargetAngle(targetState.angle);
         setTargetVelocity(targetState.speedMetersPerSecond);
     }
 
-    /**
-     * Sets whether the drive motor should be in closed loop control, or in open loop control.
-     *
-     * @param closedLoop true if the drive motor should be in closed loop control, false if it should be in open loop control
-     */
-    protected void setDriveMotorClosedLoop(boolean closedLoop) {
-        driveMotorClosedLoop = closedLoop;
+    protected void setTargetAngle(Rotation2d rotation2d) {
+        steerMotor.getClosedLoopController().setReference(rotation2d.getDegrees(), SparkBase.ControlType.kPosition);
     }
 
-    /**
-     * @return the target state of the module
-     */
-    private SwerveModuleState getTargetState() {
+    private void setTargetVelocity(double velocity){
+        setTargetVelocity(velocity, false);
+    }
+
+    private void setTargetVelocity(double velocity, boolean closedLoop) {
+        if(closedLoop) setTargetClosedLoopVelocity(velocity);
+        else setTargetOpenLoopVelocity(velocity);
+    }
+
+    protected void setTargetClosedLoopVelocity(double velocity) {
+        // TODO
+    }
+
+    protected void setTargetOpenLoopVelocity(double velocity) {
+        driveMotor.set(velocity / SwerveModuleConstants.MAX_THEORETICAL_SPEED_METERS_PER_SECOND);
+    }
+
+    protected void setBrake(boolean brake) {
+        driveMotor.setNeutralMode(brake ? NeutralModeValue.Brake : NeutralModeValue.Coast);
+    }
+
+    protected void stop() {
+        driveMotor.disable();
+        steerMotor.disable();
+    }
+
+    protected String getModuleName() {
+        return moduleName;
+    }
+
+    protected double getDriveDistance() {
+        double motorRevolutions = driveMotor.getPosition().getValueAsDouble();
+        double wheelRevolutions = motorRevolutions / SwerveModuleConstants.DRIVE_GEAR_RATIO;
+        return wheelRevolutions * SwerveModuleConstants.WHEEL_DIAMETER_METERS * Math.PI;
+    }
+
+    protected double getCurrentVelocity() {
+        double motorRps = driveMotor.getVelocity().getValue().in(Units.RotationsPerSecond);
+        double wheelRps = motorRps / SwerveModuleConstants.DRIVE_GEAR_RATIO;
+        return wheelRps * SwerveModuleConstants.WHEEL_DIAMETER_METERS * Math.PI;
+    }
+
+    protected Rotation2d getCurrentAngle() {
+        return Rotation2d.fromDegrees(steerMotor.getEncoder().getPosition());
+    }
+
+    protected SwerveModulePosition getCurrentPosition() {
+        return new SwerveModulePosition(getDriveDistance(), getCurrentAngle());
+    }
+
+    public SwerveModuleState getCurrentState() {
+        return new SwerveModuleState(getCurrentVelocity(), getCurrentAngle());
+    }
+
+    public SwerveModuleState getTargetState() {
         return targetState;
     }
-
-    /**
-     * @return the target angle of the module
-     */
-    protected abstract Rotation2d getTargetAngle();
-
-    /**
-     * @return the target velocity of the module
-     */
-    private double getTargetVelocity() {
-        return targetVelocity;
-    }
-
-    /**
-     * Sets the target velocity for the module.
-     *
-     * @param velocity the target velocity
-     */
-    private void setTargetVelocity(double velocity) {
-        targetVelocity = velocity;
-        if (driveMotorClosedLoop)
-            setTargetClosedLoopVelocity(velocity);
-        else
-            setTargetOpenLoopVelocity(velocity);
-    }
-
-    private void setTargetDegrees(double degrees) {
-        setTargetAngle(Rotation2d.fromDegrees(degrees));
-    }
-
-    /**
-     * Sets whether the drive motor should brake or coast
-     *
-     * @param brake true if the drive motor should brake, false if it should coast
-     */
-    protected abstract void setBrake(boolean brake);
-
-    /**
-     * Stops the module from moving.
-     */
-    protected abstract void stop();
-
-    /**
-     * @return the module's current angle
-     */
-    protected abstract Rotation2d getCurrentAngle();
-
-    /**
-     * @return the module's current velocity in meters per second
-     */
-    protected abstract double getCurrentVelocity();
-
-    /**
-     * @return the module's current drive distance in meters
-     */
-    protected abstract double getDriveDistance();
-
-    /**
-     * Sets the module's target angle.
-     *
-     * @param rotation2d the target angle
-     */
-    protected abstract void setTargetAngle(Rotation2d rotation2d);
-
-    /**
-     * Optimizes the module state.
-     *
-     * @param state the state to optimize
-     * @return the optimized state
-     */
-    protected abstract SwerveModuleState optimizeState(SwerveModuleState state);
-
-    /**
-     * Sets the module's target velocity in closed loop control.
-     *
-     * @param velocity the target velocity
-     */
-    protected abstract void setTargetClosedLoopVelocity(double velocity);
-
-    /**
-     * Sets the module's target velocity in open loop control.
-     *
-     * @param velocity the target velocity
-     */
-    protected abstract void setTargetOpenLoopVelocity(double velocity);
-
-    /**
-     * @return the module's name
-     */
-    protected abstract String getModuleName();
 }

@@ -2,7 +2,6 @@ package frc.robot.subsystems.swerve;
 
 import com.pathplanner.lib.config.PIDConstants;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,18 +41,13 @@ public class SwerveCommands {
      * @return the command
      */
     public static StartEndCommand getLockSwerveCommand() {
-        return new StartEndCommand(SWERVE::lockSwerve, () -> {}, SWERVE);
+        return new StartEndCommand(SWERVE::lockSwerve, SWERVE::stop, SWERVE);
     }
 
-    /**
-     * @return a command that brakes the swerve modules and then coasts them, runs when disabled
-     */
-    public static WrapperCommand getBrakeAndCoastCommand() {
-        return getSetSwerveBrakeCommand(true)
-                .andThen(new WaitCommand(SWERVE.getBrakeTimeSeconds()))
-                .andThen(getSetSwerveBrakeCommand(false))
-                .ignoringDisable(true);
+    public static Command getResetHeadingCommand() {
+        return new InstantCommand(()->SWERVE.setHeading(new Rotation2d()));
     }
+
 
 //    /**
 //     * Creates a command that will drive the robot using the given path group and event map.
@@ -131,7 +125,7 @@ public class SwerveCommands {
     public static FunctionalCommand getFieldRelativeClosedLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(true),
+                () -> initializeDrive(),
                 () -> fieldRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -151,7 +145,7 @@ public class SwerveCommands {
     public static FunctionalCommand getSelfRelativeClosedLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(true),
+                () -> initializeDrive(),
                 () -> selfRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -244,7 +238,7 @@ public class SwerveCommands {
     public static FunctionalCommand getSelfRelativeOpenLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(false),
+                () -> initializeDrive(),
                 () -> selfRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -264,7 +258,7 @@ public class SwerveCommands {
     public static FunctionalCommand getFieldRelativeOpenLoopSupplierDriveCommand(
             DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
         return new FunctionalCommand(
-                () -> initializeDrive(false),
+                SwerveCommands::initializeDrive,
                 () -> fieldRelativeDrive(x.getAsDouble(), y.getAsDouble(), theta.getAsDouble()),
                 (interrupted) -> stopDrive(),
                 () -> false,
@@ -354,9 +348,8 @@ public class SwerveCommands {
         return new PIDController(pidConstants.kP, pidConstants.kI, pidConstants.kD);
     }
 
-    private static void initializeDrive(boolean closedLoop) {
+    private static void initializeDrive() {
         SWERVE.setBrake(true);
-        SWERVE.setClosedLoop(closedLoop);
     }
 
 //    private static void fieldRelativeDrive(double x, double y, Rotation2d angle) {
@@ -388,12 +381,9 @@ public class SwerveCommands {
     }
 
     private static Translation2d getDriveTranslation(double x, double y) {
-        final double xMeterPerSecond = x * SWERVE.getMaxSpeedMetersPerSecond();
-        final double yMeterPerSecond = y * SWERVE.getMaxSpeedMetersPerSecond();
-
         return new Translation2d(
-                SWERVE.getXSlewRateLimiter().calculate(xMeterPerSecond),
-                SWERVE.getYSlewRateLimiter().calculate(yMeterPerSecond)
+                x * SWERVE.getMaxSpeedMetersPerSecond(),
+                y * SWERVE.getMaxSpeedMetersPerSecond()
         );
     }
 

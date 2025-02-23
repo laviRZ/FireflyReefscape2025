@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -16,11 +18,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot {
     // private Command m_autonomousCommand;
 
+    @Logged(name="/")
     private RobotContainer m_robotContainer;
-
     /**
      * This function is run when the robot is first started up and should be used
      * for any
@@ -32,6 +35,7 @@ public class Robot extends TimedRobot {
         // and put our
         // autonomous chooser on the dashboard.
         m_robotContainer = new RobotContainer();
+        Epilogue.bind(this);
     }
 
     /**
