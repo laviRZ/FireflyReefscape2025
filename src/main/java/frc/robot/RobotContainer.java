@@ -18,20 +18,20 @@ public class RobotContainer {
     public static final Swerve SWERVE = Swerve.getInstance();
     public static final Output OUTPUT = new Output();
     public static final Elevator ELEVATOR = new Elevator();
-    
 
     private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
 
     public RobotContainer() {
         SWERVE.setDefaultCommand(SwerveCommands.getFieldRelativeOpenLoopSupplierDriveCommand(
-                () -> -driverController.getLeftY()/4,
-                () -> -driverController.getLeftX()/4,
-                () -> -driverController.getRightX()/8
+                () -> -driverController.getLeftY() / 4,
+                () -> -driverController.getLeftX() / 4,
+                () -> -driverController.getRightX() / 8
         ));
-        // elevatorSubsystem.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
+
         configureButtonBindings();
         SmartDashboard.putData(ELEVATOR);
-        RobotContainer.ELEVATOR.setDefaultCommand(ElevatorCommands.resetEncoder(ELEVATOR));
+        
+        ELEVATOR.setDefaultCommand(ElevatorCommands.resetEncoder(ELEVATOR));
     }
 
     private void configureButtonBindings() {
@@ -39,29 +39,29 @@ public class RobotContainer {
         driverController.x().whileTrue(OutputCommands.output(OutputState.L2L3));
         driverController.a().whileTrue(OutputCommands.output(OutputState.L4));
         driverController.b().whileTrue(OutputCommands.output(OutputState.STOP));
-        
-        driverController.povUp().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L1));  
-        driverController.povRight().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L2)); 
-        driverController.povDown().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
-        driverController.povLeft().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
 
-//        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-//        driverController.b().onTrue(new InstantCommand(() -> swerveSubsystem.stopModules()));
+        driverController.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2))
+                               .onFalse(ElevatorCommands.moveDown());
+
+        driverController.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3))
+                                  .onFalse(ElevatorCommands.moveDown());
+
+        driverController.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4))
+                                 .onFalse(ElevatorCommands.moveDown());
     }
 
-    @Logged(name="Swerve")
-    public Swerve logSwerve(){
+    @Logged(name = "Swerve")
+    public Swerve logSwerve() {
         return SWERVE;
     }
 
     @Logged(name = "Output")
-    public Output logOutput(){
+    public Output logOutput() {
         return OUTPUT;
     }
 
     @Logged(name = "Elevator")
-    public Elevator logElevator(){
+    public Elevator logElevator() {
         return ELEVATOR;
     }
-
 }

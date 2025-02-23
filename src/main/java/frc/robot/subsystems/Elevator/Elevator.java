@@ -49,6 +49,15 @@ public class Elevator extends SubsystemBase {
         SmartDashboard.putNumber("current velocity", getCurrentVelocity());
         SmartDashboard.putNumber("feedforward", ElevatorConstants.FEEDFORWARD.calculate(ElevatorConstants.controller.getSetpoint().velocity));
     }
+    public void setTargetHeight(ElevatorState state) {
+        if (state != ElevatorState.L1) {
+            initController(state);
+            runMotor();
+        } else {
+            stop(); // Move to L1 when button is released
+        }
+    }
+    
 
     public void stop() {
         ElevatorConstants.elevatorMotor.set(0);
