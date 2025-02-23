@@ -16,6 +16,7 @@ import frc.robot.subsystems.Elevator.Elevator;
 import frc.robot.subsystems.output.OutputCommands;
 import frc.robot.subsystems.output.OutputConstants.OutputState;
 import frc.robot.subsystems.output.Output;
+import frc.robot.subsystems.output.OutputConstants.OutputState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.SwerveCommands;
 
@@ -41,10 +42,10 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        driverController.y().whileTrue(OutputCommands.output(OutputState.L1));
-        driverController.x().whileTrue(OutputCommands.output(OutputState.L2L3));
-        driverController.a().whileTrue(OutputCommands.output(OutputState.L4));
-        driverController.b().whileTrue(OutputCommands.output(OutputState.STOP));
+        driverController.a().and(driverController.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController.a().and(driverController.povUp().or(driverController.povRight())).whileTrue(OutputCommands.output(OutputState.L2L3));
+        driverController.a().and(driverController.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController.a().and(driverController.povCenter()).whileTrue(OutputCommands.output(OutputState.L1));
 
         driverController.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
         driverController.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
