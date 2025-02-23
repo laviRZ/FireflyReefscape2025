@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.output.OutputCommands;
-import frc.robot.subsystems.output.OutputSubsystem;
 
 import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,7 +35,6 @@ public class RobotContainer {
         ));
 
         configureButtonBindings();
-        SmartDashboard.putData(ELEVATOR);
         
         ELEVATOR.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
     }
