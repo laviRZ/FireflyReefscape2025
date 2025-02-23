@@ -12,7 +12,8 @@ public class OutputConstants {
         L4 (-ANGLE_POWER, -OUT_POWER),
         L2L3 (-ANGLE_POWER,OUT_POWER),
         STOP (0, 0),
-        L1 (-L1_TOP_MOTOR_POWER, -OUT_POWER);
+        L1 (-L1_TOP_MOTOR_POWER, -OUT_POWER),
+        INTAKE(ANGLE_POWER,OUT_POWER);
         
         double upPower;
         double downPower;

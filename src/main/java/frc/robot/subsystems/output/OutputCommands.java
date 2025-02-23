@@ -11,13 +11,21 @@ public class OutputCommands {
     public static Command output(OutputState state) {
         return new RunCommand(
                 () -> {
-                    if (!RobotContainer.OUTPUT.isCoralInside() || RobotContainer.OUTPUT.manualOverride) {
+                  
                         RobotContainer.OUTPUT.setMotorOutput(state);
-                    } else {
-                        RobotContainer.OUTPUT.stop();
-                    }
+                   
                 },
                 RobotContainer.OUTPUT
         );
+    }
+    public static Command intake(){
+        return new RunCommand(
+            () -> {
+              
+                    RobotContainer.OUTPUT.setMotorOutput(OutputConstants.OutputState.INTAKE);
+               
+            },
+            RobotContainer.OUTPUT
+    ).until(RobotContainer.OUTPUT::hasCoral);
     }
 }
