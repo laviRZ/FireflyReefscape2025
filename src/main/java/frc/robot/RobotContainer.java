@@ -33,10 +33,10 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        driverController.y().whileTrue(OutputCommands.output(OutputState.L1));
-        driverController.x().whileTrue(OutputCommands.output(OutputState.L2L3));
-        driverController.a().whileTrue(OutputCommands.output(OutputState.L4));
-        driverController.b().whileTrue(OutputCommands.output(OutputState.STOP));
+        driverController.a().and(driverController.povUp()).whileTrue(OutputCommands.output(OutputState.L1));
+        driverController.a().and(driverController.povRight().or(driverController.povDown()) ).whileTrue(OutputCommands.output(OutputState.L2L3));
+         driverController.a().and(driverController.povDown()).whileTrue(OutputCommands.output(OutputState.L2L3));
+        driverController.a().and(driverController.povLeft()).whileTrue(OutputCommands.output(OutputState.L4));
         
         driverController.povUp().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L1));  
         driverController.povRight().onTrue(ElevatorCommands.moveToHeight(ElevatorState.L2)); 
