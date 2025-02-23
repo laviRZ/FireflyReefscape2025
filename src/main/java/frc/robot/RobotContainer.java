@@ -31,7 +31,7 @@ public class RobotContainer {
         configureButtonBindings();
         SmartDashboard.putData(ELEVATOR);
         
-        ELEVATOR.setDefaultCommand(ElevatorCommands.resetEncoder(ELEVATOR));
+        ELEVATOR.setDefaultCommand(ElevatorCommands.moveToHeight(ElevatorState.L1));
     }
 
     private void configureButtonBindings() {
@@ -40,14 +40,10 @@ public class RobotContainer {
         driverController.a().whileTrue(OutputCommands.output(OutputState.L4));
         driverController.b().whileTrue(OutputCommands.output(OutputState.STOP));
 
-        driverController.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2))
-                               .onFalse(ElevatorCommands.moveDown());
-
-        driverController.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3))
-                                  .onFalse(ElevatorCommands.moveDown());
-
-        driverController.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4))
-                                 .onFalse(ElevatorCommands.moveDown());
+        driverController.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
+        driverController.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
+        driverController.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
+                               
     }
 
     @Logged(name = "Swerve")
