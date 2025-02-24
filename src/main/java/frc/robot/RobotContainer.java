@@ -42,14 +42,17 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        driverController1.a().and(driverController1.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
-        driverController1.a().and(driverController1.povUp().or(driverController1.povRight())).whileTrue(OutputCommands.output(OutputState.L2L3));
-        driverController1.a().and(driverController1.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
-        driverController1.a().and(driverController1.povCenter()).whileTrue(OutputCommands.output(OutputState.L1));
+        driverController2.a().and(driverController2.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController2.a().and(driverController2.povUp().or(driverController2.povRight())).whileTrue(OutputCommands.output(OutputState.L2L3));
+        driverController2.a().and(driverController2.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController2.a().and(driverController2.povCenter()).whileTrue(OutputCommands.output(OutputState.L1));
+        driverController2.y().whileTrue(OutputCommands.output(OutputState.INTAKE));
 
-        driverController1.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
-        driverController1.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
-        driverController1.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
+
+        driverController2.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
+        driverController2.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
+        driverController2.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
+
                                
     }
 
