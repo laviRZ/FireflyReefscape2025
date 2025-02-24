@@ -25,13 +25,15 @@ public class RobotContainer {
     public static final Output OUTPUT = new Output();
     public static final Elevator ELEVATOR = new Elevator();
 
-    private final CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+    private final CommandXboxController driverController1 = new CommandXboxController(OIConstants.kDriverControllerPort);
+    private final CommandXboxController driverController2 = new CommandXboxController(OIConstants.kDriverControllerPort);
+
 
     public RobotContainer() {
         SWERVE.setDefaultCommand(SwerveCommands.getFieldRelativeOpenLoopSupplierDriveCommand(
-                () -> -driverController.getLeftY() / 4,
-                () -> -driverController.getLeftX() / 4,
-                () -> -driverController.getRightX() / 8
+                () -> -driverController1.getLeftY() / 4,
+                () -> -driverController1.getLeftX() / 4,
+                () -> -driverController1.getRightX() / 8
         ));
 
         configureButtonBindings();
@@ -40,14 +42,14 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        driverController.a().and(driverController.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
-        driverController.a().and(driverController.povUp().or(driverController.povRight())).whileTrue(OutputCommands.output(OutputState.L2L3));
-        driverController.a().and(driverController.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
-        driverController.a().and(driverController.povCenter()).whileTrue(OutputCommands.output(OutputState.L1));
+        driverController2.a().and(driverController2.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController2.a().and(driverController2.povUp().or(driverController1.povRight())).whileTrue(OutputCommands.output(OutputState.L2L3));
+        driverController2.a().and(driverController2.povDown()).whileTrue(OutputCommands.output(OutputState.L4));
+        driverController2.a().and(driverController2.povCenter()).whileTrue(OutputCommands.output(OutputState.L1));
 
-        driverController.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
-        driverController.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
-        driverController.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
+        driverController1.povUp().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L2));
+        driverController1.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
+        driverController1.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
                                
     }
 
