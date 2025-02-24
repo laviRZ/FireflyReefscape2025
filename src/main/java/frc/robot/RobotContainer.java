@@ -53,6 +53,8 @@ public class RobotContainer {
         driverController2.povRight().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L3));
         driverController2.povDown().whileTrue(ElevatorCommands.moveToHeight(ElevatorState.L4));
 
+        driverController1.y().onTrue(SwerveCommands.getResetHeadingCommand());
+
                                
     }
 
