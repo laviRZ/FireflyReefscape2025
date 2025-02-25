@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.output.OutputCommands;
@@ -71,5 +73,13 @@ public class RobotContainer {
     @Logged(name = "Elevator")
     public Elevator logElevator() {
         return ELEVATOR;
+    }
+
+    public Command getAutonomousCommand() {
+        return SwerveCommands.getResetHeadingCommand().andThen(SwerveCommands.getFieldRelativeClosedLoopSupplierDriveCommand(
+                ()->-0.1,
+                ()->0,
+                ()->0
+        )).withTimeout(2);
     }
 }
